@@ -601,6 +601,11 @@ a {
     color: #FFF;
   }
 
+.page-section--testimonials {
+    background: url("/assets/images/testimonials-bg.jpg") top center no-repeat;
+    background-size: cover;
+  }
+
 .headline {
   font-size: 1.9rem;
   font-weight: 300;
@@ -661,6 +666,10 @@ a {
     display: table;
   }
 
+.row--t-padding {
+    padding-top: 80px;
+  }
+
 .row--gutters {
     margin-right: -65px;
   }
@@ -669,12 +678,20 @@ a {
     margin-right: -100px;
   }
 
+.row--gutters-small {
+    margin-right: -45px;
+  }
+
 .row--gutters > div {
     padding-right: 65px;
   }
 
 .row--gutters-large > div {
     padding-right: 100px;
+  }
+
+.row--gutters-small > div {
+    padding-right: 45px;
   }
 
 .row__b-margin-until-medium {
@@ -710,6 +727,24 @@ a {
     }
   }
 
+/* Equal height rules. */
+
+@media (min-width: 800px) {
+
+.row--equal-height-at-medium {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex
+  }
+  }
+
+.row--equal-height-at-medium > div {
+      float: none;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
 .generic-content-container p {
     font-weight: 300;
     line-height: 1.65;
@@ -744,6 +779,10 @@ a {
     font-weight: 500;
   }
 
+.section-title--blue {
+    color: #2f5572;
+  }
+
 .section-title__icon {
     display: block;
     margin-left: auto;
@@ -754,6 +793,8 @@ a {
 @media (min-width: 530px) {
 
 .section-title__icon {
+      position: relative;
+      top: 8px;
       display: inline-block;
       margin-left: 0;
       margin-right: 0.5rem;
@@ -801,4 +842,36 @@ a {
       font-size: 1.875rem;
       text-align: left
   }
+  }
+
+.testimonial {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 0 1.8125rem 1px 1.8125rem;
+}
+
+.testimonial__photo {
+    border-radius: 80px;
+    width: 160px;
+    height:160px;
+    overflow: hidden;
+    position: relative;
+    top: -80px;
+    margin: 0 auto -80px auto;
+    border: 6px solid rgba(255, 255, 255, 0.8);
+  }
+
+.testimonial__title {
+    color: #2f5572;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+.testimonial__subtitle {
+    color: #d59541;
+    text-align: center;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    margin: 0.25rem 0 1rem 0;
   }
