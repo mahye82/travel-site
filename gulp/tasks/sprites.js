@@ -1,5 +1,6 @@
 const gulp = require('gulp'),
-    svgSprite = require('gulp-svg-sprite');             // https://github.com/jkphl/gulp-svg-sprite
+    svgSprite = require('gulp-svg-sprite'),             // https://github.com/jkphl/gulp-svg-sprite
+    rename = require('gulp-rename');
 
 // A config object required for using the gulp-svg-sprite package. This package transforms a bunch of SVG files into an
 // image sprite. But it does more than that.
@@ -24,7 +25,7 @@ const config = {
     }
 };
 
-// A task that can be run from the command line by invoking gulp createSprite. It creates an image sprite from the
+// A task that can be run from the command line by invoking 'gulp createSprite'. It creates an image sprite from the
 // SVG icon files. This task is useful because it decreases load time when the user only needs to download one
 // image sprite file for all the icons when visiting the website.
 // To better understand the concept of sprites - read this article: https://css-tricks.com/css-sprites/
@@ -36,4 +37,16 @@ gulp.task('createSprite', function () {
     return gulp.src('./app/assets/images/icons/**/*.svg')
         .pipe(svgSprite(config))
         .pipe(gulp.dest('./app/temp/sprite'));
+});
+
+// A task that can be run from the command line by invoking 'gulp copySpriteCSS'.
+// The createSprite task creates an image sprite as well as generates a CSS file for finding individual icons in that
+// image sprite. However, the file is placed in a temporary directory. This task copies the CSS file to
+gulp.task('copySpriteCSS', function () {
+    // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
+    // This task takes the auto-generated sprite CSS file as a source. It pipes this file as a stream to the gulp-rename
+    // package. This stream is then piped to the destination directory.
+    return gulp.src('./app/temp/sprite/css/*.css')
+        .pipe(rename('_sprite.css'))                            // The file will be renamed to _sprite.css
+        .pipe(gulp.dest('./app/assets/styles/modules/'));
 });
