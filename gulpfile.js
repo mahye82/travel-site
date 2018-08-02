@@ -2,3 +2,4 @@
 // bulky, we moved them to their own files.
 require('./gulp/tasks/styles');
 require('./gulp/tasks/watch');
+require('./gulp/tasks/sprites');

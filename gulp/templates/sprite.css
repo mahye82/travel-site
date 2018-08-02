@@ -1,0 +1,20 @@
+/*
+./gulp/templates/sprite.css is a Mustache template file. It is used by the gulp task called createSprite in
+./gulp/tasks/sprites/sprites.js. That task makes use of this template file to grab the CSS properties for each icon in
+an SVG sprite image that the task also creates, so that we can style our app using the sprite image.
+
+The package gulp-svg-sprite does most of the heavy lifting, aside from the task and this template file.
+
+Everything between the shapes tags below is extracted for each icon (aka 'shape') in the SVG sprite file.
+
+Confused by where the heck all these variables come from? Look at the docs for their meanings:
+https://github.com/jkphl/svg-sprite/blob/master/docs/templating.md
+*/
+{{#shapes}}
+  .icon--{{base}} {
+    width: {{width.outer}}px;
+    height: {{height.outer}}px;
+    background-image: url('/temp/sprite/css/{{{sprite}}}');
+    background-position: {{position.relative.xy}}
+  }
+{{/shapes}}
