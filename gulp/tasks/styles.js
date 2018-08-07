@@ -4,7 +4,8 @@ const gulp = require('gulp'),
     cssvars = require('postcss-simple-vars'),
     nested = require('postcss-nested'),
     cssImport = require('postcss-import'),
-    mixins = require('postcss-mixins');
+    mixins = require('postcss-mixins'),
+    hexrgba = require('postcss-hexrgba');
 
 // A gulp task. Invoking 'gulp styles' from the terminal will run this task, but it is also invoked by the gulp 'watch'
 // task.
@@ -24,7 +25,7 @@ gulp.task('styles', function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     return gulp.src('./app/assets/styles/styles.css')
 
-        .pipe(postcss([cssImport, mixins, cssvars, nested, autoprefixer]))
+        .pipe(postcss([cssImport, mixins, cssvars, nested, hexrgba, autoprefixer]))
 
         // In the event of an error during PostCSS compilation, we want 'this' (the stream that was piped) to tell gulp
         // that it should come to a graceful end. It did its best, but is now finished. This will mean the next pipe
