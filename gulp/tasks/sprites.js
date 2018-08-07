@@ -1,6 +1,7 @@
 const gulp = require('gulp'),
     svgSprite = require('gulp-svg-sprite'),             // https://github.com/jkphl/gulp-svg-sprite
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    del = require('del');                               // https://gulpjs.org/recipes/delete-files-folder
 
 // A config object required for using the gulp-svg-sprite package. This package transforms a bunch of SVG files into an
 // image sprite. But it does more than that.
@@ -26,11 +27,23 @@ const config = {
     }
 };
 
+// A task that can be run from the command line by invoking 'gulp beginClean'. However, it is usually run as the first
+// step in the 'gulp icons' task. The other tasks run by gulp icons automatically produce certain files. This task's
+// job is to delete the old files and folders, so that we don't have redundant copies of files lying around.
+gulp.task('beginClean', function () {
+    return del([
+        './app/temp/sprite',
+        './app/assets/images/sprites'
+    ]);
+});
+
 // A task that can be run from the command line by invoking 'gulp createSprite'. It creates an image sprite from the
 // SVG icon files. This task is useful because it decreases load time when the user only needs to download one
 // image sprite file for all the icons when visiting the website.
 // To better understand the concept of sprites - read this article: https://css-tricks.com/css-sprites/
-gulp.task('createSprite', function () {
+//
+// The second argument lists dependencies - i.e. beginClean has to run before createSprite can run.
+gulp.task('createSprite', ['beginClean'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     // This task takes as a source, the SVG files in the icons folder (even if they are located in subdirectories, hence
     // the **). It then pipes the stream from the source to the gulp-svg-sprite package. This is then piped to a
@@ -63,12 +76,26 @@ gulp.task('copySpriteGraphic', ['createSprite'], function () {
         .pipe(gulp.dest('./app/assets/images/sprites'));
 });
 
+// A task that can be run from the command line by invoking 'gulp endClean'. However, it is usually run as the last
+// step in the 'gulp icons' task. The other tasks run by gulp icons automatically produce certain files. During this
+// sequence files are placed in a temporary folder. The job of this task is to delete that temporary folder, so we
+// we don't have useless files in the source files for our app.
+//
+// The second argument lists dependencies - i.e. we only want endClean to run AFTER copySpriteGraphic and copySpriteCSS
+// have finished making copies from the temp folder to their proper destination.
+gulp.task('endClean', ['copySpriteGraphic', 'copySpriteCSS'], function () {
+    return del([
+        './app/temp/sprite'
+    ]);
+});
+
 // A task that can be run from the command line by invoking 'gulp icons'.
 //
-// The second argument is a set of tasks that should be run. However, these tasks would actually execute simultaneously,
-// but since we want the other tasks to run AFTER createSprite, we had to add it as a dependency in the definitions
-// for the other tasks (see above).
+// The second argument is a set of tasks that should be run. These tasks would actually execute simultaneously,
+// but since we want some other tasks to run AFTER createSprite, we had to add it as a dependency in the definitions
+// for the other tasks (see above). Similarly, we don't want createSprite to begin before the beginClean task has
+// finished, so we added beginClean as a dependency in the defintion for createSprite.
 //
 // (NOTE: This is how the lesson did it. The truth is that the createSprite is redundant here because we made it a
 // dependency of the other tasks listed below.)
-gulp.task('icons', ['createSprite', 'copySpriteGraphic', 'copySpriteCSS']);
+gulp.task('icons', ['beginClean', 'createSprite', 'copySpriteGraphic', 'copySpriteCSS', 'endClean']);
