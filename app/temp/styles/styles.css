@@ -1129,6 +1129,10 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
   background-color: rgba(47,85,114, .3);
 }
 
+.site-header__btn-container {
+    float: right;
+  }
+
 .site-header__logo {
     position: absolute;
     top: 0;
@@ -1136,8 +1140,8 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
     padding: 25px 36px;
   }
 
-.site-header__btn-container {
-    float: right;
+.site-header__logo__graphic {
+    text-indent: -9999px;
   }
 
 .primary-nav--pull-right {
