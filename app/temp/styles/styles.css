@@ -1199,6 +1199,10 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
   }
   }
 
+.site-header__menu-content.site-header__menu-content--is-visible {
+      display: block;
+    }
+
 .primary-nav--pull-right {
     float: right;
   }
