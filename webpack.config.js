@@ -16,5 +16,18 @@ module.exports = {
         // https://nodejs.org/docs/latest/api/modules.html#modules_dirname
         path: path.resolve(__dirname, "./app/temp/scripts"),
         filename: "App.js"
+    },
+    module: {
+        loaders: [
+            {
+                // babel-loader helps us integrate babel with webpack. https://github.com/babel/babel-loader
+                loader: "babel-loader",
+                query: {
+                    presets: ['es2015']     // Make use of the ES2015 standards when transpiling
+                },
+                test: /\.js$/,              // Only use the babel-loader on Javascript files. (This is a regex)
+                exclude: /node_modules/     // We only need to run babel on our own JS files
+            }
+        ]
     }
 };
