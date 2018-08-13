@@ -30,7 +30,13 @@ gulp.task('watch', function () {
     watch('./app/assets/styles/**/*.css', function () {
         // Run the CSS inject task.
         gulp.start('cssInject');
-    })
+    });
+
+    // Use gulp-watch to watch any changes to the JS files in the scripts folder (including subdirectories).
+    watch('./app/assets/scripts/**/*.js', function () {
+        // Run the 'scriptsRefresh' gulp task.
+        gulp.start('scriptsRefresh');
+    });
 });
 
 // Invoking 'gulp cssInject' will run this task. However, it is intended to be run from the gulp 'watch' task above. The
@@ -43,4 +49,12 @@ gulp.task('cssInject', ['styles'], function () {
     // With CSS, it doesn't even need to refresh - it can inject the CSS in on the fly. That's what this task does.
     return gulp.src('./app/temp/styles/styles.css')
         .pipe(browserSync.stream());
+});
+
+// Invoking 'gulp scriptsRefresh' will run this task. However, it is intended to be run from the 'gulp watch' task.
+// This particular task tells the browser to refresh. Note that there is a dependency on the 'gulp scripts' task
+// (which runs webpack, bundling all the script files). This means webpack finishes running BEFORE the browser
+// refreshes.
+gulp.task('scriptsRefresh', ['scripts'], function () {
+    browserSync.reload();
 });
