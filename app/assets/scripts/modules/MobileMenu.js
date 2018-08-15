@@ -3,6 +3,7 @@ import $ from 'jquery';
 class MobileMenu {
     constructor() {
         // Select different DOM elements and store them as properties to an instance of MobileMenu
+        this.siteHeader = $('.site-header');
         this.menuIcon = $('.site-header__menu-icon');
         this.menuContent = $('.site-header__menu-content');
         this.events();
@@ -18,6 +19,7 @@ class MobileMenu {
     /* An event handler that toggles the appearance of the menu icon on smaller screens. */
     toggleMenu() {
         this.menuContent.toggleClass("site-header__menu-content--is-visible");
+        this.siteHeader.toggleClass("site-header--is-expanded");
     }
 }
 
