@@ -16,10 +16,11 @@ class MobileMenu {
         this.menuIcon.click(this.toggleMenu.bind(this));
     }
 
-    /* An event handler that toggles the appearance of the menu icon on smaller screens. */
+    /* An event handler that toggles the appearance of the navigation menu icon on smaller screens. */
     toggleMenu() {
         this.menuContent.toggleClass("site-header__menu-content--is-visible");
         this.siteHeader.toggleClass("site-header--is-expanded");
+        this.menuIcon.toggleClass("site-header__menu-icon--close-x");
     }
 }
 
