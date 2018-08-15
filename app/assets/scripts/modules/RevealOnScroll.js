@@ -2,10 +2,14 @@ import $ from 'jquery';
 import waypoints from '../../../../node_modules/waypoints/lib/noframework.waypoints';   // Imports Waypoint class
 
 class RevealOnScroll {
-    constructor() {
-        // Select DOM elements and store them as properties on an instance of RevealOnScroll
-        this.itemsToReveal = $('.feature-item');
-        // As soon as the page loads, items should be hidden
+    constructor(itemsToReveal, offsetPercentage) {
+        // itemsToReveal is a jQuery selection of some DOM elements that we want to reveal when they are scrolled to
+        this.itemsToReveal = itemsToReveal;
+        // offsetPercentage is a value for the Waypoint class that defines when the handler function should fire
+        // when scrolling
+        this.offsetPercentage = offsetPercentage;
+
+        // When the page first loads, items should be hidden. This method gives them the CSS class to do that.
         this.hideInitially();
         // Since we only want to reveal an element once it has been scrolled to, we leverage the module 'waypoints'
         // to set this up
@@ -35,7 +39,12 @@ class RevealOnScroll {
      *              viewport we could set the offset to 100%.
      */
     createWaypoints() {
-        // itemsToReveal is a jQuery selection of some DOM elements. each() is a JQuery method:
+        // Because the value of 'this' will change when we're using the new keyword for the Waypoint below, we declare
+        // 'that' to refer to an instance of the RevealOnScroll class. This will allow us to access the offsetPercentage
+        // property on the RevealOnScroll instance when we're creating a new Waypoint.
+        const that = this;
+
+        // each() is a JQuery method:
         // http://api.jquery.com/jquery.each/
         this.itemsToReveal.each(function () {
 
@@ -49,7 +58,7 @@ class RevealOnScroll {
                     // Give the item the CSS class that will reveal it (i.e. increase its opacity)
                     $(currentItem).addClass("reveal-item--is-visible");
                 },
-                offset: "85%"
+                offset: that.offsetPercentage               // 'that' is the instance of RevealOnScroll
             });
         });
     }

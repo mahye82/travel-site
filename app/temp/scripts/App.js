@@ -10338,10 +10338,15 @@ var _RevealOnScroll = __webpack_require__(3);
 
 var _RevealOnScroll2 = _interopRequireDefault(_RevealOnScroll);
 
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mobileMenu = new _MobileMenu2.default();
-var revealOnScroll = new _RevealOnScroll2.default();
+new _RevealOnScroll2.default((0, _jquery2.default)('.feature-item'), "85%");
+new _RevealOnScroll2.default((0, _jquery2.default)('.testimonial'), "60%");
 
 /***/ }),
 /* 2 */
@@ -10430,12 +10435,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // Imports Waypoint class
 
 var RevealOnScroll = function () {
-    function RevealOnScroll() {
+    function RevealOnScroll(itemsToReveal, offsetPercentage) {
         _classCallCheck(this, RevealOnScroll);
 
-        // Select DOM elements and store them as properties on an instance of RevealOnScroll
-        this.itemsToReveal = (0, _jquery2.default)('.feature-item');
-        // As soon as the page loads, items should be hidden
+        // itemsToReveal is a jQuery selection of some DOM elements that we want to reveal when they are scrolled to
+        this.itemsToReveal = itemsToReveal;
+        // offsetPercentage is a value for the Waypoint class that defines when the handler function should fire
+        // when scrolling
+        this.offsetPercentage = offsetPercentage;
+
+        // When the page first loads, items should be hidden. This method gives them the CSS class to do that.
         this.hideInitially();
         // Since we only want to reveal an element once it has been scrolled to, we leverage the module 'waypoints'
         // to set this up
@@ -10472,7 +10481,12 @@ var RevealOnScroll = function () {
     }, {
         key: 'createWaypoints',
         value: function createWaypoints() {
-            // itemsToReveal is a jQuery selection of some DOM elements. each() is a JQuery method:
+            // Because the value of 'this' will change when we're using the new keyword for the Waypoint below, we declare
+            // 'that' to refer to an instance of the RevealOnScroll class. This will allow us to access the offsetPercentage
+            // property on the RevealOnScroll instance when we're creating a new Waypoint.
+            var that = this;
+
+            // each() is a JQuery method:
             // http://api.jquery.com/jquery.each/
             this.itemsToReveal.each(function () {
 
@@ -10486,7 +10500,7 @@ var RevealOnScroll = function () {
                         // Give the item the CSS class that will reveal it (i.e. increase its opacity)
                         (0, _jquery2.default)(currentItem).addClass("reveal-item--is-visible");
                     },
-                    offset: "85%"
+                    offset: that.offsetPercentage // 'that' is the instance of RevealOnScroll
                 });
             });
         }
