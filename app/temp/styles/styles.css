@@ -1375,6 +1375,10 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
       padding: 12px 0;
       background-color: transparent
   }
+
+      .primary-nav a.is-current-link {
+        color: #fabb69;
+      }
   }
 
 .reveal-item {
