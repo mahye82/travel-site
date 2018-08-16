@@ -1412,6 +1412,8 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
   bottom: 0;
   left: 0;
   right: 0;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .modal__inner {
