@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import waypoints from '../../../../node_modules/waypoints/lib/noframework.waypoints';   // Imports Waypoint class
+import smoothScroll from 'jquery-smooth-scroll';
 
 class StickyHeader {
     constructor() {
@@ -14,6 +15,21 @@ class StickyHeader {
 
         // Create Waypoints for each page section when the page loads
         this.createPageSectionWaypoints();
+
+        // Add smooth scrolling to links in the header
+        this.addSmoothScrolling();
+    }
+
+    /**
+     * Adds smooth scrolling to links in the header. If the user clicks one of the header links, the browser will
+     * smoothly scrolling to whatever the href for the link is.
+     *
+     * (The default browser behaviour is to instantly navigate to the link on the same page. This is replaced with
+     * smooth scrolling.)
+     * https://www.npmjs.com/package/jquery-smooth-scroll
+     */
+    addSmoothScrolling() {
+        this.headerLinks.smoothScroll();
     }
 
     /**
