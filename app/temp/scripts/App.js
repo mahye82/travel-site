@@ -11109,12 +11109,17 @@ var _StickyHeader = __webpack_require__(5);
 
 var _StickyHeader2 = _interopRequireDefault(_StickyHeader);
 
+var _Modal = __webpack_require__(7);
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mobileMenu = new _MobileMenu2.default();
 new _RevealOnScroll2.default((0, _jquery2.default)('.feature-item'), "85%");
 new _RevealOnScroll2.default((0, _jquery2.default)('.testimonial'), "60%");
 var stickyHeader = new _StickyHeader2.default();
+var modal = new _Modal2.default();
 
 /***/ }),
 /* 3 */
@@ -11831,6 +11836,93 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 }));
 
 
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Modal = function () {
+    function Modal() {
+        _classCallCheck(this, Modal);
+
+        // Select DOM elements and attach them as properties to the Modal instance
+        this.openModalButton = (0, _jquery2.default)(".open-modal");
+        this.modal = (0, _jquery2.default)(".modal");
+        this.closeModalButton = (0, _jquery2.default)(".modal__close");
+
+        // Start adding listeners to all the events
+        this.events();
+    }
+
+    /* A single function which attaches event handlers to different events. */
+
+
+    _createClass(Modal, [{
+        key: "events",
+        value: function events() {
+            // When a button for opening the modal overlay is clicked...
+            this.openModalButton.click(this.openModal.bind(this));
+
+            // When the button for closing the modal overlay is clicked...
+            this.closeModalButton.click(this.closeModal.bind(this));
+
+            // When any key is pressed and released...
+            (0, _jquery2.default)(document).keyup(this.keyPressHandler.bind(this));
+        }
+
+        /* An event handler for making the modal overlay visible. */
+
+    }, {
+        key: "openModal",
+        value: function openModal() {
+            this.modal.addClass("modal--is-visible");
+            // By default, when buttons whose href=# are clicked, the browser will immediately hop to the top of the page.
+            // This prevents that default behaviour.
+            return false;
+        }
+
+        /* An event handler for hiding the modal overlay. */
+
+    }, {
+        key: "closeModal",
+        value: function closeModal() {
+            this.modal.removeClass("modal--is-visible");
+            // No need for return false, since the close button isn't an actual button - it's just an X inside a div
+        }
+
+        /* An event handler for key presses that hides the modal overlay if the escape key was pressed. */
+
+    }, {
+        key: "keyPressHandler",
+        value: function keyPressHandler(e) {
+            // If the key pressed was ESC,
+            if (e.keyCode === 27) {
+                this.closeModal();
+            }
+        }
+    }]);
+
+    return Modal;
+}();
+
+exports.default = Modal;
 
 /***/ })
 /******/ ]);
