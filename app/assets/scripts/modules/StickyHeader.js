@@ -5,6 +5,7 @@ import smoothScroll from 'jquery-smooth-scroll';
 class StickyHeader {
     constructor() {
         // Select DOM elements and attach them as properties to this StickyHeader instance
+        this.lazyImages = $(".lazyload");
         this.siteHeader = $(".site-header");
         this.headerTriggerElement = $(".large-hero__title");
         this.pageSections = $(".page-section");
@@ -18,6 +19,24 @@ class StickyHeader {
 
         // Add smooth scrolling to links in the header
         this.addSmoothScrolling();
+
+        // Since waypoints are disrupted by lazy loading, waypoints needs to be fixed by refreshing their measurements
+        // whenever an image has loaded
+        this.refreshWaypoints();
+    }
+
+    /**
+     * An event handler which refreshes the Waypoint measurements after each image has loaded. This is necessary
+     * because the app also makes use of lazy loading of images (via the lazysmiles module in Vendor.js). waypoints
+     * works by initially calculating the distances from the top of the page to the waypoints that the developer has
+     * defined and putting this data in a global Waypoint object. Lazy loading makes these initial measurements
+     * incorrect because the distance of waypoint elements from the top the page changes after images have loaded. Thus
+     * it is necessary to refresh all waypoint measurements after the loading of an image occurs.
+     */
+    refreshWaypoints() {
+        this.lazyImages.on("load", function () {
+            Waypoint.refreshAll();
+        });
     }
 
     /**
