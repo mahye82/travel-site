@@ -11319,6 +11319,7 @@ var StickyHeader = function () {
         _classCallCheck(this, StickyHeader);
 
         // Select DOM elements and attach them as properties to this StickyHeader instance
+        this.lazyImages = (0, _jquery2.default)(".lazyload");
         this.siteHeader = (0, _jquery2.default)(".site-header");
         this.headerTriggerElement = (0, _jquery2.default)(".large-hero__title");
         this.pageSections = (0, _jquery2.default)(".page-section");
@@ -11332,19 +11333,40 @@ var StickyHeader = function () {
 
         // Add smooth scrolling to links in the header
         this.addSmoothScrolling();
+
+        // Since waypoints are disrupted by lazy loading, waypoints needs to be fixed by refreshing their measurements
+        // whenever an image has loaded
+        this.refreshWaypoints();
     }
 
     /**
-     * Adds smooth scrolling to links in the header. If the user clicks one of the header links, the browser will
-     * smoothly scrolling to whatever the href for the link is.
-     *
-     * (The default browser behaviour is to instantly navigate to the link on the same page. This is replaced with
-     * smooth scrolling.)
-     * https://www.npmjs.com/package/jquery-smooth-scroll
+     * An event handler which refreshes the Waypoint measurements after each image has loaded. This is necessary
+     * because the app also makes use of lazy loading of images (via the lazysmiles module in Vendor.js). waypoints
+     * works by initially calculating the distances from the top of the page to the waypoints that the developer has
+     * defined and putting this data in a global Waypoint object. Lazy loading makes these initial measurements
+     * incorrect because the distance of waypoint elements from the top the page changes after images have loaded. Thus
+     * it is necessary to refresh all waypoint measurements after the loading of an image occurs.
      */
 
 
     _createClass(StickyHeader, [{
+        key: 'refreshWaypoints',
+        value: function refreshWaypoints() {
+            this.lazyImages.on("load", function () {
+                Waypoint.refreshAll();
+            });
+        }
+
+        /**
+         * Adds smooth scrolling to links in the header. If the user clicks one of the header links, the browser will
+         * smoothly scrolling to whatever the href for the link is.
+         *
+         * (The default browser behaviour is to instantly navigate to the link on the same page. This is replaced with
+         * smooth scrolling.)
+         * https://www.npmjs.com/package/jquery-smooth-scroll
+         */
+
+    }, {
         key: 'addSmoothScrolling',
         value: function addSmoothScrolling() {
             this.headerLinks.smoothScroll();
