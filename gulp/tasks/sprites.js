@@ -1,7 +1,8 @@
 const gulp = require('gulp'),
     svgSprite = require('gulp-svg-sprite'),             // https://github.com/jkphl/gulp-svg-sprite
     rename = require('gulp-rename'),
-    del = require('del');                               // https://gulpjs.org/recipes/delete-files-folder
+    del = require('del'),                               // https://gulpjs.org/recipes/delete-files-folder
+    svg2png = require('gulp-svg2png');                  // https://github.com/akoenig/gulp-svg2png
 
 // A config object required for using the gulp-svg-sprite package. This package transforms a bunch of SVG files into an
 // image sprite. But it does more than that.
@@ -53,6 +54,20 @@ gulp.task('createSprite', ['beginClean'], function () {
         .pipe(gulp.dest('./app/temp/sprite'));
 });
 
+// A task that can be run from the command line by invoking 'gulp createPngCopy'. However, it is usually run as a step
+// in the 'gulp icons' task. It takes a previously created SVG sprite and creates a PNG copy of the sprite. This is
+// to support those minority of browsers that don't support SVGs.
+//
+// The second argument lists dependencies - i.e. createSprite has to run before createPngCopy can run.
+gulp.task('createPngCopy', ['createSprite'], function () {
+    // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
+    // This task takes the SVG sprite as a source, pipes the stream to the gulp-svg2png package. This is then piped
+    // to a destination folder.
+    return gulp.src('./app/temp/sprite/css/*.svg')
+        .pipe(svg2png())
+        .pipe(gulp.dest('./app/temp/sprite/css'));
+});
+
 // A task that can be run from the command line by invoking 'gulp copySpriteCSS'.
 // The createSprite task creates an image sprite as well as generates a CSS file for finding individual icons in that
 // image sprite. However, the file is placed in a temporary directory.
@@ -67,12 +82,12 @@ gulp.task('copySpriteCSS', ['createSprite'], function () {
         .pipe(gulp.dest('./app/assets/styles/modules/'));
 });
 
-// A task that can be run from the command line by invoking 'gulp copySpriteGraphic'. It takes as a source any SVG file
-// living in the CSS folder. It pipes it as a stream to the sprites destination folder.
-// The second argument lists dependencies - i.e. createSprite has to run before copySpriteGraphic can run.
-gulp.task('copySpriteGraphic', ['createSprite'], function () {
+// A task that can be run from the command line by invoking 'gulp copySpriteGraphic'. It takes as a source any SVG and
+// PNG files in the CSS folder. It pipes them as a stream to the sprites destination folder.
+// The second argument lists dependencies - i.e. createPngCopy has to run before copySpriteGraphic can run.
+gulp.task('copySpriteGraphic', ['createPngCopy'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
-    return gulp.src('./app/temp/sprite/css/**/*.svg')
+    return gulp.src('./app/temp/sprite/css/**/*.{svg,png}')
         .pipe(gulp.dest('./app/assets/images/sprites'));
 });
 
@@ -98,4 +113,4 @@ gulp.task('endClean', ['copySpriteGraphic', 'copySpriteCSS'], function () {
 //
 // (NOTE: This is how the lesson did it. The truth is that the createSprite is redundant here because we made it a
 // dependency of the other tasks listed below.)
-gulp.task('icons', ['beginClean', 'createSprite', 'copySpriteGraphic', 'copySpriteCSS', 'endClean']);
+gulp.task('icons', ['beginClean', 'createSprite', 'createPngCopy', 'copySpriteGraphic', 'copySpriteCSS', 'endClean']);
