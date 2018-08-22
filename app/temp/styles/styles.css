@@ -1022,13 +1022,18 @@ THE FOLLOWING COMMENTS ONLY APPLY TO THE TEMPLATE FILE ./gulp/templates/sprite.c
 
 ./gulp/templates/sprite.css is a Mustache template file. It is used by the gulp task called createSprite in
 ./gulp/tasks/sprites/sprites.js. That task makes use of this template file to grab the CSS properties for each icon in
-an SVG sprite image that the task also creates, so that we can style our app using the sprite image.
+a sprite image that the task also creates, so that we can style our app using the sprite image.
 
 The package gulp-svg-sprite does most of the heavy lifting, aside from the task and this template file.
 
 Everything between the 'shapes' tags below is extracted for each icon (aka 'shape') in the SVG sprite file. Everything
 between the 'first' tags is for the first shape in the sprite. Since the background image URL will be the same for all
 icons (it's the sprite file, after all), we can put it in its own rule.
+
+So what does the .no-svg .icon mean? .no-svg is a class that will be added to the main <html> element on a page by the
+modernizr.js file, if it detects that the browser doesn't support SVG. In that case, we'll want to fallback to using
+a PNG sprite image, and so the background-image's url needs to change. We do this by invoking the
+replaceSvgWithPng with the sprite filename.
 
 Confused by where the heck all these variables come from? Look at the docs for their meanings:
 https://github.com/jkphl/svg-sprite/blob/master/docs/templating.md
@@ -1041,6 +1046,10 @@ THESE COMMENTS WILL APPEAR IN THE SPRITE'S GENERATED CSS FILE, but are intended 
 
 .icon {
     background-image: url('/assets/images/sprites/sprite-69f19c2e.svg');
+  }
+
+.no-svg .icon {
+    background-image: url('/assets/images/sprites/sprite-69f19c2e.png');
   }
 
 .icon--clear-view-escapes {

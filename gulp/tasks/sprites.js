@@ -16,6 +16,19 @@ const gulp = require('gulp'),
 const config = {
     mode: {
         css: {                                      // Activate the «css» mode for generating the sprite file
+            variables: {
+                // A function used in the ./gulp/templates/sprite.css to replace '.svg' in the filename with '.png'
+                replaceSvgWithPng: function () {
+                    return function (sprite, render) {
+                        // sprite is the dynamic filename of the sprite - for example, sprite-69f19c2e.svg
+                        // render is a method that gives us access to the CSS in the template.
+                        //
+                        // Essentially, the line below goes into the ./gulp/templates/sprite.css and fiddles with the
+                        // string of the sprite filename, and ensures it has a '.png' ending.
+                        return render(sprite).split('.svg').join('.png');
+                    };
+                }
+            },
             sprite: 'sprite.svg',                   // The filename for the sprite we want to generate
             render: {
                 css: {
