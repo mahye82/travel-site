@@ -14,6 +14,14 @@ const gulp = require('gulp'),
 // file.
 // https://github.com/jkphl/gulp-svg-sprite
 const config = {
+    // Add some padding between the different icons in the generated sprite image. This is useful because icons
+    // occasionally end up displaying the edge of other icons unintentionally. A little gap prevents artifacts like
+    // this.
+    shape: {
+      spacing: {
+          padding: 1
+      }
+    },
     mode: {
         css: {                                      // Activate the «css» mode for generating the sprite file
             variables: {
