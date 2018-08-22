@@ -91,9 +91,17 @@
     }
   }
 
-  /* Equal height rules. */
+  /*
+    Equal height rules.
 
-  &--equal-height-at-medium {
+    NOTE:
+    .flexbox is a class that would be added by modernizr.js. modernizr.js will check to see if the browser supports
+    flexbox, and if so, it will add the .flexbox class to the main <html> element. If the browser doesn't support
+    flexbox, the .no-flexbox class gets added to the <html> element instead. This allows us to provide CSS that
+    supports different types of browser.
+  */
+
+  .flexbox &--equal-height-at-medium {
     @mixin atMedium {
       display: flex;
     }
@@ -104,7 +112,7 @@
     }
   }
 
-  &--equal-height-at-large {
+  .flexbox &--equal-height-at-large {
     @mixin atLarge {
       display: flex;
     }

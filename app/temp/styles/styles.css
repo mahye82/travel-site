@@ -822,18 +822,26 @@ a {
     }
   }
 
-/* Equal height rules. */
+/*
+    Equal height rules.
+
+    NOTE:
+    .flexbox is a class that would be added by modernizr.js. modernizr.js will check to see if the browser supports
+    flexbox, and if so, it will add the .flexbox class to the main <html> element. If the browser doesn't support
+    flexbox, the .no-flexbox class gets added to the <html> element instead. This allows us to provide CSS that
+    supports different types of browser.
+  */
 
 @media (min-width: 800px) {
 
-.row--equal-height-at-medium {
+.flexbox .row--equal-height-at-medium {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex
   }
   }
 
-.row--equal-height-at-medium > div {
+.flexbox .row--equal-height-at-medium > div {
       float: none;
       display: -webkit-box;
       display: -ms-flexbox;
@@ -842,14 +850,14 @@ a {
 
 @media (min-width: 1010px) {
 
-.row--equal-height-at-large {
+.flexbox .row--equal-height-at-large {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex
   }
   }
 
-.row--equal-height-at-large > div {
+.flexbox .row--equal-height-at-large > div {
       float: none;
       display: -webkit-box;
       display: -ms-flexbox;
