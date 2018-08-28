@@ -1,6 +1,7 @@
 const gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),            // https://github.com/sindresorhus/gulp-imagemin
-    del = require('del');                           // https://www.npmjs.com/package/del
+    del = require('del'),                           // https://www.npmjs.com/package/del
+    usemin = require('gulp-usemin');                // https://www.npmjs.com/package/gulp-usemin
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for deleting the dist folder and its
 // contents. We do this so that we start from a blank state before any of the other build tasks run.
@@ -29,9 +30,20 @@ gulp.task('optimizeImages', ['deleteDistFolder'], function () {
        .pipe(gulp.dest("./dist/assets/images"));
 });
 
+// This gulp task is a dependency of the 'gulp build' task. It is responsible for making copies of the HTML and CSS
+// files, compressing and revisioning them, and then moving the copies to the dist folder.
+//
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one.
+gulp.task('usemin', ['deleteDistFolder'], function () {
+    // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
+    return gulp.src('./app/index.html')
+        .pipe(usemin())
+        .pipe(gulp.dest('./dist'));
+});
+
 // This gulp task can be run by invoking 'gulp build' from the terminal. This task doesn't do anything itself - it
 // just has a bunch of other task dependencies. Thus it's a shortcut for the terminal to run all the build tasks.
 //
 // Invoking 'gulp build' will create/update the dist directory - just the compressed production files needed for our
 // server (not our organised, uncompressed dev/source files).
-gulp.task('build', ['deleteDistFolder', 'optimizeImages']);
+gulp.task('build', ['deleteDistFolder', 'optimizeImages', 'usemin']);
