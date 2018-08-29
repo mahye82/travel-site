@@ -1,7 +1,10 @@
 const gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),            // https://github.com/sindresorhus/gulp-imagemin
     del = require('del'),                           // https://www.npmjs.com/package/del
-    usemin = require('gulp-usemin');                // https://www.npmjs.com/package/gulp-usemin
+    usemin = require('gulp-usemin'),                // https://github.com/zont/gulp-usemin - DEPRECATED - NEEDS UPDATE!
+    rev = require('gulp-rev'),                      // https://github.com/sindresorhus/gulp-rev
+    cssnano = require('gulp-cssnano'),              // https://github.com/ben-eb/gulp-cssnano
+    uglify = require('gulp-uglify');                // https://www.npmjs.com/package/gulp-uglify
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for deleting the dist folder and its
 // contents. We do this so that we start from a blank state before any of the other build tasks run.
@@ -36,9 +39,20 @@ gulp.task('optimizeImages', ['deleteDistFolder'], function () {
 // The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one.
 gulp.task('usemin', ['deleteDistFolder'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
-    return gulp.src('./app/index.html')
-        .pipe(usemin())
-        .pipe(gulp.dest('./dist'));
+    return gulp.src('./app/index.html')             // Take the index.html as a source - which also contains comments
+                                                    // that are used by gulp-usemin.
+        .pipe(usemin({
+            css: [                                  // Filters we want to apply to our CSS
+                function () { return rev() },       // Revision the CSS, i.e. styles.css -> styles-45109b.css
+                function () { return cssnano() }    // Compress the CSS
+            ],
+            js: [                                   // Filters we want to apply to our CSS
+                function () { return rev() },       // Revision the Javascript files
+                function () { return uglify() }     // Compress the JS files
+            ]
+        }))
+        .pipe(gulp.dest('./dist'));                 // Pipe the index.html to ./dist along with any files wrapped in
+                                                    // usemin comments in the index.html
 });
 
 // This gulp task can be run by invoking 'gulp build' from the terminal. This task doesn't do anything itself - it
