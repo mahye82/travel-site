@@ -19,7 +19,7 @@ gulp.task('previewDist', function () {
         notify: false,
         // Specify where our website lives (i.e. where index.html is), so that browser-sync can set up a little server.
         server: {
-            baseDir: 'dist'
+            baseDir: 'docs'         // GitHub requires the 'dist' folder to be called 'docs' instead
         }
     });
 });
@@ -27,7 +27,7 @@ gulp.task('previewDist', function () {
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for deleting the dist folder and its
 // contents. We do this so that we start from a blank state before any of the other build tasks run.
 gulp.task('deleteDistFolder', function () {
-    return del('./dist');
+    return del('./docs');           // GitHub requires the 'dist' folder to be called 'docs' instead
 });
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for copying over any other files that the
@@ -49,7 +49,7 @@ gulp.task('copyGeneralFiles', ['deleteDistFolder'], function () {
 
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete
     return gulp.src(pathsToCopy)
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./docs'));     // GitHub requires the 'dist' folder to be called 'docs' instead
 });
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for compressing the image files in the
@@ -57,11 +57,11 @@ gulp.task('copyGeneralFiles', ['deleteDistFolder'], function () {
 //
 // Gulp to take as source as everything in the ./app/assets/images/ folder except the /icons folder, and pipes it as
 // a stream to the gulp-imagemin module. imagemin optimises the images using the given plugin options. Then the result
-// is streamed to the destination directory ./dist/assets/images.
+// is streamed to the destination directory ./docs/assets/images.
 //
 // The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We
 // want 'deleteDistFolder' to have run first so that we're starting with a blank slate. We also want to have a fresh
-// rebuild of our image sprites before they're optimized and copied over to the ./dist/assets/images folder.
+// rebuild of our image sprites before they're optimized and copied over to the ./docs/assets/images folder.
 gulp.task('optimizeImages', ['deleteDistFolder', 'icons'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     // '!' indicates files that we want to exclude from those added by * wildcards.
@@ -72,7 +72,7 @@ gulp.task('optimizeImages', ['deleteDistFolder', 'icons'], function () {
            multipass: true                      // Runs multiple passes on SVGs -
                                                 //          https://www.amberddesign.com/how-to-optimize-an-svg-file/
        }))
-       .pipe(gulp.dest("./dist/assets/images"));
+       .pipe(gulp.dest("./docs/assets/images"));    // GitHub requires the 'dist' folder to be called 'docs' instead
 });
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for making copies of the HTML, CSS and JS
@@ -95,8 +95,8 @@ gulp.task('usemin', ['deleteDistFolder', 'styles', 'scripts'], function () {
                 function () { return uglify() }     // Compress the JS files
             ]
         }))
-        .pipe(gulp.dest('./dist'));                 // Pipe the index.html to ./dist along with any files wrapped in
-                                                    // usemin comments in the index.html
+        .pipe(gulp.dest('./docs'));                 // Pipe the index.html to ./docs along with any files wrapped in
+                                                    // usemin comments in the index.html.
 });
 
 // This gulp task can be run by invoking 'gulp build' from the terminal. This task doesn't do anything itself - it
