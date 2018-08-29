@@ -12,6 +12,28 @@ gulp.task('deleteDistFolder', function () {
     return del('./dist');
 });
 
+// This gulp task is a dependency of the 'gulp build' task. It is responsible for copying over any other files that the
+// other build tasks do not. For example, if we had some random folder containing image files (for some reason), this
+// task would ensure that it gets copied over to the dist.
+//
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one.
+gulp.task('copyGeneralFiles', ['deleteDistFolder'], function () {
+    // A list of paths that will be used by gulp.src below
+    const pathsToCopy = [
+        './app/**/*',                   // Copy everything in app's subdirectories
+        '!./app/index.html',            // But exclude index.html, since gulp task 'usemin' copies/compresses/revs this
+        '!./app/assets/images/**',      // Exclude everything in images, since gulp task 'optimizeImages' handles this
+        '!./app/assets/styles/**',      // Exclude everything in styles, since gulp task 'usemin' handles this
+        '!./app/assets/scripts/**',     // Exclude everything in scripts, since gulp task 'usemin' handles this
+        '!./app/temp',                  // Exclude everything in temp
+        '!./app/temp/**'
+    ];
+
+    // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete
+    return gulp.src(pathsToCopy)
+        .pipe(gulp.dest('./dist'));
+});
+
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for compressing the image files in the
 // app folder and copying them over to the dist folder.
 //
@@ -60,4 +82,4 @@ gulp.task('usemin', ['deleteDistFolder'], function () {
 //
 // Invoking 'gulp build' will create/update the dist directory - just the compressed production files needed for our
 // server (not our organised, uncompressed dev/source files).
-gulp.task('build', ['deleteDistFolder', 'optimizeImages', 'usemin']);
+gulp.task('build', ['deleteDistFolder', 'copyGeneralFiles', 'optimizeImages', 'usemin']);
