@@ -26,7 +26,11 @@ gulp.task('previewDist', function () {
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for deleting the dist folder and its
 // contents. We do this so that we start from a blank state before any of the other build tasks run.
-gulp.task('deleteDistFolder', function () {
+//
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We want
+// a fresh rebuild of our image sprites ready to go, before we start copying them over to ./docs/assets/images folder,
+// and before we start generating the CSS.
+gulp.task('deleteDistFolder', ['icons'], function () {
     return del('./docs');           // GitHub requires the 'dist' folder to be called 'docs' instead
 });
 
@@ -60,9 +64,8 @@ gulp.task('copyGeneralFiles', ['deleteDistFolder'], function () {
 // is streamed to the destination directory ./docs/assets/images.
 //
 // The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We
-// want 'deleteDistFolder' to have run first so that we're starting with a blank slate. We also want to have a fresh
-// rebuild of our image sprites before they're optimized and copied over to the ./docs/assets/images folder.
-gulp.task('optimizeImages', ['deleteDistFolder', 'icons'], function () {
+// want 'deleteDistFolder' to have run first so that we're starting with a blank slate.
+gulp.task('optimizeImages', ['deleteDistFolder'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     // '!' indicates files that we want to exclude from those added by * wildcards.
    return gulp.src(['./app/assets/images/**/*', '!./app/assets/images/icons', '!././app/assets/images/icons/**/*'])
@@ -75,13 +78,26 @@ gulp.task('optimizeImages', ['deleteDistFolder', 'icons'], function () {
        .pipe(gulp.dest("./docs/assets/images"));    // GitHub requires the 'dist' folder to be called 'docs' instead
 });
 
-// This gulp task is a dependency of the 'gulp build' task. It is responsible for making copies of the HTML, CSS and JS
+// This gulp task is a dependency of the 'gulp build' task. It exists purely to ensure that the order of the tasks
+// is correct, rather than doing much work of its own.
+//
+// Since it has a dependency on the 'deleteDistFolder', it ensures that the deletion of the dist folder (and the
+// generation/rebuilding of sprites) occurs first.
+//
+// Then it runs the 'usemin' task (which has dependencies on the 'scripts' and 'styles' tasks). This ensures the 'scripts'
+// and 'styles' tasks only ever run after the deletion of the dist folder and the generation/rebuilding of
+// sprites.
+gulp.task('useminTrigger', ['deleteDistFolder'], function () {
+    gulp.start('usemin');
+});
+
+// This gulp task is run by the 'useminTrigger' task. It is responsible for making copies of the HTML, CSS and JS
 // files, compressing and revisioning them, and then moving the copies to the dist folder.
 //
-// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We
-// want 'deleteDistFolder' to have run first so that we're starting with a blank slate. But we also want 'styles' and
-// 'scripts' gulp tasks to run first, so that we really do have the most updated CSS and JS before copying them to dist.
-gulp.task('usemin', ['deleteDistFolder', 'styles', 'scripts'], function () {
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We want
+// 'styles' and 'scripts' gulp tasks to run first, so that we really do have the most updated CSS and JS before copying
+// them to dist.
+gulp.task('usemin', ['styles', 'scripts'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     return gulp.src('./app/index.html')             // Take the index.html as a source - which also contains comments
                                                     // that are used by gulp-usemin.
@@ -104,4 +120,4 @@ gulp.task('usemin', ['deleteDistFolder', 'styles', 'scripts'], function () {
 //
 // Invoking 'gulp build' will create/update the dist directory - just the compressed production files needed for our
 // server (not our organised, uncompressed dev/source files).
-gulp.task('build', ['deleteDistFolder', 'copyGeneralFiles', 'optimizeImages', 'usemin']);
+gulp.task('build', ['deleteDistFolder', 'copyGeneralFiles', 'optimizeImages', 'useminTrigger']);
