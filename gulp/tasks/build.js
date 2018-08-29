@@ -41,8 +41,10 @@ gulp.task('copyGeneralFiles', ['deleteDistFolder'], function () {
 // a stream to the gulp-imagemin module. imagemin optimises the images using the given plugin options. Then the result
 // is streamed to the destination directory ./dist/assets/images.
 //
-// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one.
-gulp.task('optimizeImages', ['deleteDistFolder'], function () {
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We
+// want 'deleteDistFolder' to have run first so that we're starting with a blank slate. We also want to have a fresh
+// rebuild of our image sprites before they're optimized and copied over to the ./dist/assets/images folder.
+gulp.task('optimizeImages', ['deleteDistFolder', 'icons'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     // '!' indicates files that we want to exclude from those added by * wildcards.
    return gulp.src(['./app/assets/images/**/*', '!./app/assets/images/icons', '!././app/assets/images/icons/**/*'])
@@ -55,11 +57,13 @@ gulp.task('optimizeImages', ['deleteDistFolder'], function () {
        .pipe(gulp.dest("./dist/assets/images"));
 });
 
-// This gulp task is a dependency of the 'gulp build' task. It is responsible for making copies of the HTML and CSS
+// This gulp task is a dependency of the 'gulp build' task. It is responsible for making copies of the HTML, CSS and JS
 // files, compressing and revisioning them, and then moving the copies to the dist folder.
 //
-// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one.
-gulp.task('usemin', ['deleteDistFolder'], function () {
+// The second argument is the list of dependencies for this task, i.e. the tasks we want to run before this one. We
+// want 'deleteDistFolder' to have run first so that we're starting with a blank slate. But we also want 'styles' and
+// 'scripts' gulp tasks to run first, so that we really do have the most updated CSS and JS before copying them to dist.
+gulp.task('usemin', ['deleteDistFolder', 'styles', 'scripts'], function () {
     // Requires a return statement because .src is async, and we want gulp to be aware when these operations complete.
     return gulp.src('./app/index.html')             // Take the index.html as a source - which also contains comments
                                                     // that are used by gulp-usemin.
