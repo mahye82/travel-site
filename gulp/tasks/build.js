@@ -4,7 +4,25 @@ const gulp = require('gulp'),
     usemin = require('gulp-usemin'),                // https://github.com/zont/gulp-usemin - DEPRECATED - NEEDS UPDATE!
     rev = require('gulp-rev'),                      // https://github.com/sindresorhus/gulp-rev
     cssnano = require('gulp-cssnano'),              // https://github.com/ben-eb/gulp-cssnano
-    uglify = require('gulp-uglify');                // https://www.npmjs.com/package/gulp-uglify
+    uglify = require('gulp-uglify'),                // https://www.npmjs.com/package/gulp-uglify
+    browserSync = require('browser-sync');          // https://browsersync.io/docs/gulp
+
+// This gulp task is NOT a dependency of the 'gulp build' task. It can be run by invoking 'gulp previewDist' in the
+// terminal. This task spins up a local server and opens the browser, allowing the developer to see the dist copy (i.e.
+// the non-development production build) of the app in action.
+gulp.task('previewDist', function () {
+    // browser-sync is a package that can be used to refresh the browser whenever you want. In this case, we want to
+    // auto-refresh the browser whenever we've made changes to the source files.
+    browserSync.init({
+        // By default, whenever browser-sync refreshes the page, it'll produce a temporary little black box on the web
+        // page explaining that it's connected to browser-sync. This notify prop gets rid of it.
+        notify: false,
+        // Specify where our website lives (i.e. where index.html is), so that browser-sync can set up a little server.
+        server: {
+            baseDir: 'dist'
+        }
+    });
+});
 
 // This gulp task is a dependency of the 'gulp build' task. It is responsible for deleting the dist folder and its
 // contents. We do this so that we start from a blank state before any of the other build tasks run.
