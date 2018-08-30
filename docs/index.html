@@ -8,11 +8,17 @@
     <meta name="description"
           content="Your clarity. One trip away. We create soul restoring journeys that inspire you to be you.">
 
-    <!--This is a gulp-usemin comment-->
-    <link rel="stylesheet" href="/assets/styles/styles-5b5ca59193.css"/>
+    <!-- This is a gulp-usemin comment. It copies the non-optimized file found at the href to the path found in the
+    comment above.
 
-    <!--This is a gulp-usemin comment-->
-    <script src="/assets/scripts/Vendor-c19e6efdf0.js"></script>
+    NOTE: If the path starts with a '/', the browser will read the path as beginning from the root of the domain, for
+    example http://mahye82.github.io/ . But since our site will live at http://mahye82.github.io/travel-site/ , we
+    remove the '/' from the start of the path. The absence of the '/' means the browser will look for a path relative to
+    this HTML file. -->
+    <link rel="stylesheet" href="assets/styles/styles-d3d52e85bb.css"/>
+
+    <!--This is a gulp-usemin comment. -->
+    <script src="assets/scripts/Vendor-c19e6efdf0.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -295,7 +301,7 @@
 </div>
 
 <!--This is a gulp-usemin comment-->
-<script src="/assets/scripts/App-feae94bc7c.js"></script>
+<script src="assets/scripts/App-feae94bc7c.js"></script>
 
 </body>
 </html>

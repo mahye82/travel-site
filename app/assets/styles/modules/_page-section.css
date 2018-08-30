@@ -31,7 +31,13 @@
 
     @mixin atLarge {
       &.lazyloaded {
-        background: url("/assets/images/testimonials-bg.jpg") top center no-repeat;
+        /*
+        If the path started with a '/', the browser would read the path as beginning from the root of the domain, for
+        example http://mahye82.github.io/ . But since our site will live at http://mahye82.github.io/travel-site/ , we
+        remove the '/' from the start of the path. Instead we need to provide the path of the image RELATIVE to the
+        final, optimized styles.css.
+        */
+        background: url("../../assets/images/testimonials-bg.jpg") top center no-repeat;
         background-size: cover;
       }
     }
